@@ -12,21 +12,21 @@ func getUserBalance() float64 {
 func choicesControl(choice int, balance float64) {
 	if choice == 1 {
 		fmt.Print("Your current balance is: ", balance)
-	}
-	if choice == 2 {
-		var deposit float64
-		fmt.Print("Deposit: ")
-		fmt.Scan(&deposit)
-		balance = balance + deposit
+	} else if choice == 2 {
+		var depositAmount float64
+		fmt.Print("Deposit amount: ")
+		fmt.Scan(&depositAmount)
+		balance = balance + depositAmount
 		fmt.Print("Your Current Balance: ", balance)
-	}
-	if choice == 3 {
-		var withdraw float64
-		fmt.Print("amount: ")
-		fmt.Scan(&withdraw)
-		balance = balance - withdraw
-		print("Witdraw was sucessfully ")
+	} else if choice == 3 {
+		var witdrawlAmount float64
+		fmt.Print("Witdrawl amount: ")
+		fmt.Scan(&witdrawlAmount)
+		balance = balance - witdrawlAmount
+		print("Witdrawl was sucessfully ")
 		fmt.Print("Your Current Balance: ", balance)
+	} else {
+		print("Sesion Terminada!")
 	}
 }
 func main() {
@@ -35,7 +35,7 @@ func main() {
 	print("What would you like to do ?")
 	print("1. Check balance")
 	print("2. Deposit money")
-	print("3. Withdraw money")
+	print("3. Witdrawl money")
 	print("4. Exit")
 
 	var choice int
