@@ -1,17 +1,36 @@
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+	"os"
+	"strconv"
+)
 
+const balanceFileName = "balance.txt"
+
+func writeBalanceToFile(balance float64) {
+	stringBalance := fmt.Sprint(balance)
+	os.WriteFile(balanceFileName, []byte(stringBalance), 0644)
+}
 func print(text string) {
 	fmt.Println(text)
 }
-func getUserBalance() float64 {
-	const balance float64 = 1000.0
-	return balance
+func getUserBalance() (float64, error) {
+	data, err := os.ReadFile(balanceFileName)
+	if err != nil {
+		return 1000, errors.New("Error to find the balance file.")
+	}
+	balanceText := string(data)
+	balance, err := strconv.ParseFloat(balanceText, 64)
+	if err != nil {
+		return 1000, errors.New("Error converting the user balance to float64")
+	}
+	return balance, nil
 }
 func choicesControl(balance float64) {
 	var choice int
-	print("Welcome to Go Bank Application")
+	fmt.Println("Welcome to Go Bank Application")
 	for {
 		print("What would you like to do ?")
 		print("1. Check balance")
@@ -20,10 +39,10 @@ func choicesControl(balance float64) {
 		print("4. Exit")
 		fmt.Print("Your choice:")
 		fmt.Scan(&choice)
-
-		if choice == 1 {
+		switch choice {
+		case 1:
 			fmt.Println("Your current balance is: ", balance)
-		} else if choice == 2 {
+		case 2:
 			var depositAmount float64
 			fmt.Print("Deposit amount: ")
 			fmt.Scan(&depositAmount)
@@ -32,8 +51,9 @@ func choicesControl(balance float64) {
 				continue
 			}
 			balance = balance + depositAmount
+			writeBalanceToFile(balance)
 			fmt.Println("Your Current Balance: ", balance)
-		} else if choice == 3 {
+		case 3:
 			var witdrawlAmount float64
 			fmt.Print("Witdrawl amount: ")
 			fmt.Scan(&witdrawlAmount)
@@ -45,16 +65,23 @@ func choicesControl(balance float64) {
 				continue
 			}
 			balance = balance - witdrawlAmount
+			writeBalanceToFile(balance)
 			print("Witdrawl was sucessfully ")
 			fmt.Print("Your Current Balance: ", balance)
-		} else {
+		default:
 			print("Sesion Terminada!")
-			break
+			return
+
 		}
 	}
 
 }
 func main() {
-	balance := getUserBalance()
+	balance, err := getUserBalance()
+	if err != nil {
+		fmt.Println("ERROR")
+		fmt.Println(err)
+		fmt.Println("-----------------------------------------------------")
+	}
 	choicesControl(balance)
 }
