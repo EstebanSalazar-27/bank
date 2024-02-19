@@ -1,42 +1,28 @@
 package main
 
 import (
-	"errors"
 	"fmt"
-	"os"
-	"strconv"
+	"ridersenis/bank/fileOps"
 )
 
 const balanceFileName = "balance.txt"
 
-func writeBalanceToFile(balance float64) {
-	stringBalance := fmt.Sprint(balance)
-	os.WriteFile(balanceFileName, []byte(stringBalance), 0644)
-}
 func print(text string) {
 	fmt.Println(text)
 }
-func getUserBalance() (float64, error) {
-	data, err := os.ReadFile(balanceFileName)
-	if err != nil {
-		return 1000, errors.New("Error to find the balance file.")
-	}
-	balanceText := string(data)
-	balance, err := strconv.ParseFloat(balanceText, 64)
-	if err != nil {
-		return 1000, errors.New("Error converting the user balance to float64")
-	}
-	return balance, nil
+
+func showOptions() {
+	print("What would you like to do ?")
+	print("1. Check balance")
+	print("2. Deposit money")
+	print("3. Witdrawl money")
+	print("4. Exit")
 }
 func choicesControl(balance float64) {
 	var choice int
 	fmt.Println("Welcome to Go Bank Application")
 	for {
-		print("What would you like to do ?")
-		print("1. Check balance")
-		print("2. Deposit money")
-		print("3. Witdrawl money")
-		print("4. Exit")
+		showOptions()
 		fmt.Print("Your choice:")
 		fmt.Scan(&choice)
 		switch choice {
@@ -51,7 +37,7 @@ func choicesControl(balance float64) {
 				continue
 			}
 			balance = balance + depositAmount
-			writeBalanceToFile(balance)
+			fileOps.WriteFloatToFile(balance, balanceFileName)
 			fmt.Println("Your Current Balance: ", balance)
 		case 3:
 			var witdrawlAmount float64
@@ -65,7 +51,7 @@ func choicesControl(balance float64) {
 				continue
 			}
 			balance = balance - witdrawlAmount
-			writeBalanceToFile(balance)
+			fileOps.WriteFloatToFile(balance, balanceFileName)
 			print("Witdrawl was sucessfully ")
 			fmt.Print("Your Current Balance: ", balance)
 		default:
@@ -77,7 +63,7 @@ func choicesControl(balance float64) {
 
 }
 func main() {
-	balance, err := getUserBalance()
+	balance, err := fileOps.ReadFloatFromFile(balanceFileName)
 	if err != nil {
 		fmt.Println("ERROR")
 		fmt.Println(err)
